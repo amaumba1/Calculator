@@ -1,4 +1,4 @@
-# Calculator Project with only React and Hooks 
+# Calculator Project with only React and Hooks git
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
