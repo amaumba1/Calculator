@@ -1,6 +1,4 @@
-
 import Big from "big.js";
-
 import operate from "./operate";
 import isNumber from "./isNumber";
 
@@ -13,6 +11,7 @@ import isNumber from "./isNumber";
  *   next:String       the next number to be operated on with the total
  *   operation:String  +, -, etc.
  */
+
 export default function calculate(obj, buttonName) {
   if (buttonName === "AC") {
     return {
@@ -58,6 +57,7 @@ export default function calculate(obj, buttonName) {
         operation: null,
       };
     }
+
     if (obj.next) {
       return {
         next: Big(obj.next)
