@@ -1,23 +1,27 @@
 import React, { useState } from 'react'
 import Display from './Display'
 import ButtonPanel from './ButtonPanel'
-import calculate from '../logic/calculate'
+import calculate  from '../logic/calculate'
 import './App.css'
 
 const App = () => {
-  const [ total, setTotal ] = useState(null)
-  const [ next, setNext ] = useState(null)
-  // const [ operation, setOperation ] = useState(null)
+  const [ calc, setCalc ] = useState({ total: null , next: null , operation: null })
 
   const handleClick = buttonName => {
-    setTotal(calculate(buttonName))
-    setNext(calculate(buttonName))
-    // setOperation(calculate(buttonName))
+    // first option 
+    // setCalc(prevState => ({...prevState, ...calculate(calc, buttonName)}))
+
+    // second option 
+    // setCalc({...calc, ...calculate(calc, buttonName)});
+
+    // third option 
+    const updatedVal = calculate(calc, buttonName)
+    setCalc(prevState => ({...prevState, ...updatedVal}))
   }
 
   return (
     <div className="component-app">
-      <Display value={ next || total || "0" } /> 
+      <Display value={ calc.next || calc.total || "0" } /> 
       <ButtonPanel clickHandler={handleClick}/> 
     </div>
   )
