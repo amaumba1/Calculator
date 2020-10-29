@@ -13,7 +13,7 @@ import isNumber from "./isNumber";
  *   next:String       the next number to be operated on with the total
  *   operation:String  +, -, etc.
  */
-export default function calculate(obj, buttonName) {
+export default function calculate(calcState, buttonName) {
   if (buttonName === "AC") {
     return {
       total: null,
@@ -23,19 +23,19 @@ export default function calculate(obj, buttonName) {
   }
 
   if (isNumber(buttonName)) {
-    if (buttonName === "0" && obj.next === "0") {
+    if (buttonName === "0" && calcState.next === "0") {
       return {};
     }
     // If there is an operation, update next
-    if (obj.operation) {
-      if (obj.next) {
-        return { next: obj.next + buttonName };
+    if (calcState.operation) {
+      if (calcState.next) {
+        return { next: calcState.next + buttonName };
       }
       return { next: buttonName };
     }
     // If there is no operation, update next and clear the value
-    if (obj.next) {
-      const next = obj.next === "0" ? buttonName : obj.next + buttonName;
+    if (calcState.next) {
+      const next = calcState.next === "0" ? buttonName : calcState.next + buttonName;
       return {
         next,
         total: null,
@@ -48,8 +48,8 @@ export default function calculate(obj, buttonName) {
   }
 
   if (buttonName === "%") {
-    if (obj.operation && obj.next) {
-      const result = operate(obj.total, obj.next, obj.operation);
+    if (calcState.operation && calcState.next) {
+      const result = operate(calcState.total, calcState.next, calcState.operation);
       return {
         total: Big(result)
           .div(Big("100"))
@@ -58,9 +58,9 @@ export default function calculate(obj, buttonName) {
         operation: null,
       };
     }
-    if (obj.next) {
+    if (calcState.next) {
       return {
-        next: Big(obj.next)
+        next: Big(calcState.next)
           .div(Big("100"))
           .toString(),
       };
@@ -69,20 +69,20 @@ export default function calculate(obj, buttonName) {
   }
 
   if (buttonName === ".") {
-    if (obj.next) {
+    if (calcState.next) {
       // ignore a . if the next number already has one
-      if (obj.next.includes(".")) {
+      if (calcState.next.includes(".")) {
         return {};
       }
-      return { next: obj.next + "." };
+      return { next: calcState.next + "." };
     }
     return { next: "0." };
   }
 
   if (buttonName === "=") {
-    if (obj.next && obj.operation) {
+    if (calcState.next && calcState.operation) {
       return {
-        total: operate(obj.total, obj.next, obj.operation),
+        total: operate(calcState.total, calcState.next, calcState.operation),
         next: null,
         operation: null,
       };
@@ -93,11 +93,11 @@ export default function calculate(obj, buttonName) {
   }
 
   if (buttonName === "+/-") {
-    if (obj.next) {
-      return { next: (-1 * parseFloat(obj.next)).toString() };
+    if (calcState.next) {
+      return { next: (-1 * parseFloat(calcState.next)).toString() };
     }
-    if (obj.total) {
-      return { total: (-1 * parseFloat(obj.total)).toString() };
+    if (calcState.total) {
+      return { total: (-1 * parseFloat(calcState.total)).toString() };
     }
     return {};
   }
@@ -106,14 +106,14 @@ export default function calculate(obj, buttonName) {
 
   // When the user presses an operation button without having entered
   // a number first, do nothing.
-  // if (!obj.next && !obj.total) {
+  // if (!calcState.next && !calcState.total) {
   //   return {};
   // }
 
   // User pressed an operation button and there is an existing operation
-  if (obj.operation) {
+  if (calcState.operation) {
     return {
-      total: operate(obj.total, obj.next, obj.operation),
+      total: operate(calcState.total, calcState.next, calcState.operation),
       next: null,
       operation: buttonName,
     };
@@ -122,13 +122,13 @@ export default function calculate(obj, buttonName) {
   // no operation yet, but the user typed one
 
   // The user hasn't typed a number yet, just save the operation
-  if (!obj.next) {
+  if (!calcState.next) {
     return { operation: buttonName };
   }
 
   // save the operation and shift 'next' into 'total'
   return {
-    total: obj.next,
+    total: calcState.next,
     next: null,
     operation: buttonName,
   };

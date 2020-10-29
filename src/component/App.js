@@ -15,8 +15,14 @@ const App = () => {
     // setCalc({...calc, ...calculate(calc, buttonName)});
 
     // third option 
+    // const updatedVal = calculate(calc, buttonName)
+    // setCalc(prevState => ({...prevState, ...updatedVal}))
+
+    // four option 
     const updatedVal = calculate(calc, buttonName)
-    setCalc(prevState => ({...prevState, ...updatedVal}))
+    setCalc(prevState => {
+      return {...prevState, ...updatedVal}
+    })
   }
 
   return (
